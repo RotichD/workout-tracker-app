@@ -1,14 +1,30 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import AuthStack from './navigation/AuthStack';
+import AppStack from './navigation/AppStack';
+//switch navigator
+//stack navigator
+//bottomtabnaviagtor
 
-export default function App() {
+// Switch Navigator {
+//LoginFlow -> Stack navigator switches between signup/signin
+//mainFlow -> bottom tab Navigator between work/
+// }
+
+const Stack = createNativeStackNavigator();
+
+export default App = () => {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name='AuthStack' component={AuthStack} />
+        <Stack.Screen name='AppStack' component={AppStack} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
