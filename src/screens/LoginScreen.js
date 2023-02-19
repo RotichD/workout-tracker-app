@@ -41,9 +41,9 @@ const LoginScreen = ({ navigation }) => {
         email,
         password
       );
-      console.log(userCredential);
+      navigation.replace('AppStack');
     } catch (error) {
-      setError(error.message);
+      setError('Something went wrong :(');
     } finally {
       setIsLoading(false);
     }
@@ -78,6 +78,9 @@ const LoginScreen = ({ navigation }) => {
             type='password'
             value={password}
           />
+          {error && (
+            <Text style={{ color: 'red', alignSelf: 'center' }}>{error}</Text>
+          )}
           <Spacer>
             <Button
               containerStyle={styles.button}
