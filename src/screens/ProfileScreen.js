@@ -3,7 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import { Button } from '@rneui/base';
 import { auth, signOut } from '../../firebase';
 
-const ProfileScreen = () => {
+const ProfileScreen = ({ navigation }) => {
   return (
     <View>
       <Text>Profile Screen</Text>
@@ -12,7 +12,7 @@ const ProfileScreen = () => {
         onPress={() => {
           signOut(auth)
             .then(() => {
-              // User logged out
+              navigation.navigate('AuthStack');
             })
             .catch((error) => {
               const errorCode = error.code;
