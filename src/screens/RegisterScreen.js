@@ -1,21 +1,27 @@
-import React, { useState } from 'react';
-import { SafeAreaView, KeyboardAvoidingView, StyleSheet } from 'react-native';
-import { Text, Button, Input } from '@rneui/themed';
-import Spacer from '../components/Spacer';
-import { StatusBar } from 'expo-status-bar';
-import { auth, createUserWithEmailAndPassword } from '../../firebase';
+import React, { useState } from "react";
+import { SafeAreaView, KeyboardAvoidingView, StyleSheet } from "react-native";
+import { Text, Button, Input } from "@rneui/themed";
+import Spacer from "../components/Spacer";
+import { StatusBar } from "expo-status-bar";
+import {
+  auth,
+  createUserWithEmailAndPassword,
+  updateProfile,
+} from "../../firebase";
 
 const RegisterScreen = ({ navigation }) => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const register = () => {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // User account created successfully
         const user = userCredential.user;
-        console.log(user);
+        updateProfile(user, {
+          displayName: name,
+        });
       })
       .catch((error) => {
         // Handle error
@@ -27,8 +33,8 @@ const RegisterScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar style='dark' />
-      <KeyboardAvoidingView behavior='padding' style={styles.container}>
+      <StatusBar style="dark" />
+      <KeyboardAvoidingView behavior="padding" style={styles.container}>
         <Spacer>
           <Text h2 style={styles.header}>
             Sign Up
@@ -37,31 +43,31 @@ const RegisterScreen = ({ navigation }) => {
           <Input
             autoFocus
             autoCorrect={false}
-            placeholder='Name'
+            placeholder="Name"
             onChangeText={setName}
-            type='text'
+            type="text"
             value={name}
           />
           <Input
-            autoCapitalize='none'
+            autoCapitalize="none"
             autoCorrect={false}
-            placeholder='Email'
+            placeholder="Email"
             onChangeText={setEmail}
-            type='email'
+            type="email"
             value={email}
           />
           <Input
-            autoCapitalize='none'
+            autoCapitalize="none"
             autoCorrect={false}
-            placeholder='Password'
+            placeholder="Password"
             onChangeText={setPassword}
             secureTextEntry
-            type='password'
+            type="password"
             value={password}
             onSubmitEditing={register}
           />
           <Spacer>
-            <Button title='Register' onPress={register} raised />
+            <Button title="Register" onPress={register} raised />
           </Spacer>
         </Spacer>
       </KeyboardAvoidingView>
@@ -72,12 +78,12 @@ const RegisterScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
     marginBottom: 150,
   },
   header: {
     marginLeft: 10,
-    alignItems: 'center',
+    alignItems: "center",
   },
 });
 

@@ -28,6 +28,8 @@ const LoginScreen = ({ navigation }) => {
       }
     };
 
+    unsubscribe();
+
     return unsubscribe;
   }, []);
 
@@ -41,7 +43,6 @@ const LoginScreen = ({ navigation }) => {
         email,
         password
       );
-      navigation.replace('AppStack');
     } catch (error) {
       setError('Something went wrong :(');
     } finally {
