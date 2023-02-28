@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   SafeAreaView,
   Text,
@@ -10,13 +10,18 @@ import { Entypo } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
 import ExerciseModalForm from "../components/ExerciseModal";
+import { Context as ExerciseContext } from "../context/ExerciseContext";
 
 const ExercisesScreen = () => {
-  const [isVisible, setIsVisible] = useState(false);
+  // const [isVisible, setIsVisible] = useState(false);
 
-  const toggleModal = () => {
-    setIsVisible(!isVisible);
-  };
+  // const toggleModal = () => {
+  //   setIsVisible(!isVisible);
+  // };
+
+  const {
+    toggleModal,
+  } = useContext(ExerciseContext);
 
   const DATA = [
     {
@@ -85,7 +90,7 @@ const ExercisesScreen = () => {
         keyExtractor={(item) => item.id}
         className="flex-1 px-8"
       />
-      <ExerciseModalForm toggleModal={toggleModal} isVisible={isVisible} setIsVisible={setIsVisible}/>
+      <ExerciseModalForm />
     </SafeAreaView>
   );
 };

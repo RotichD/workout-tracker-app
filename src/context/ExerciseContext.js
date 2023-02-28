@@ -7,49 +7,59 @@ const exerciseReducer = (state, action) => {
     case "submit":
       return {
         ...state,
-        name: "",
-        muscleGroup: "",
-        bodyWeight: false,
+        // name: "",
+        // muscleGroup: "",
+        // bodyWeight: false,
         modalVisible: false,
       };
-    case "text_change":
-      return {
-        ...state,
-        name: action.payload.name,
-        muscleGroup: action.payload.muscleGroup,
-      };
-    case "toggle_checkbox":
-      return {
-        ...state,
-        bodyWeight: !bodyWeight,
-      };
+    case 'add_error':
+      return {...state, errorMessage: 'something went wrong'}
+    case 'clear_error_message':
+      return {...state, errorMEssage: ''}
     case "toggle_modal":
       return {
         ...state,
-        modalVisible: !modalVisible,
+        modalVisible: !state.modalVisible,
+      };
+    case "on_request_close":
+      return {
+        ...state,
+        modalVisible: false,
       };
   }
 };
 
-const handleSubmit = (dispatch) => (name, muscleGroup, bodyWeight) => {
+const handleSubmit = (dispatch) => (name, muscleGroup, isBodyWeight) => {
   console.log({
     name,
     muscleGroup,
-    bodyWeight,
+    isBodyWeight,
   });
   dispatch({
     type: "submit",
   });
 };
 
-const handleTextChange = (dispatch) => (name, muscleGroup) => {
+// const handleTextChange = (dispatch) => (name, muscleGroup) => {
+//   dispatch({
+//     type: "text_change",
+//     payload: { name, muscleGroup },
+//   });
+// };
+
+// const toggleCheckbox = (dispatch) => () => {
+//   dispatch({
+//     type: "toggle_checkbox",
+//   });
+// };
+
+const onRequestClose = (dispatch) => () => {
   dispatch({
-    type: "text_change",
-    payload: { name, muscleGroup },
+    type: "on_request_close",
   });
 };
 
-const toggleCheckbox = (dispatch) => () => {
+const toggleModal = (dispatch) => () => {
   dispatch({
     type: "toggle_modal",
   });
@@ -57,6 +67,10 @@ const toggleCheckbox = (dispatch) => () => {
 
 export const { Provider, Context } = createDataContext(
   exerciseReducer,
-  { handleSubmit, handleTextChange, toggleCheckbox },
-  { name: "", muscleGroup: "", bodyWeight: false, modalVisible: false }
+  {
+    handleSubmit,
+    onRequestClose,
+    toggleModal,
+  },
+  { modalVisible: false, errorMessage: '' }
 );

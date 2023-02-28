@@ -1,27 +1,49 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Modal, TextInput, Text, TouchableOpacity, View } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
+import { Context as ExerciseContext } from "../context/ExerciseContext";
 
-const ExerciseModalForm = ({ toggleModal, isVisible, setIsVisible }) => {
+const ExerciseModalForm = () => {
   const [muscleGroup, setMuscleGroup] = useState("");
   const [name, setName] = useState("");
-  const [isChecked, setIsChecked] = useState(false);
+  const [isBodyWeight, setIsBodyWeight] = useState(false);
 
   const toggleCheckbox = () => {
-    setIsChecked(!isChecked);
+    setIsBodyWeight(!isBodyWeight);
   };
 
-  const handleSubmit = () => {
-    console.log(`Submitted: ${name}`);
-    setIsVisible(false);
+  const onCancel = () => {
+    toggleModal();
+    setIsBodyWeight(false);
+    setName("");
+    setMuscleGroup("");
   };
+
+  const onSubmit = () => {
+    try {
+      handleSubmit(name, muscleGroup, isBodyWeight);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setIsBodyWeight(false);
+      setName("");
+      setMuscleGroup("");
+    }
+  };
+
+  const {
+    state: { modalVisible },
+    handleSubmit,
+    onRequestClose,
+    toggleModal,
+  } = useContext(ExerciseContext);
 
   return (
     <Modal
       animationType="slide"
       transparent={true}
-      visible={isVisible}
-      onRequestClose={() => setIsVisible(false)}
+      visible={modalVisible}
+      onRequestClose={onRequestClose}
     >
       <View className="flex-1 items-center justify-center bg-gray-800/70">
         <View className=" bg-white p-8 rounded-lg w-80">
@@ -45,7 +67,7 @@ const ExerciseModalForm = ({ toggleModal, isVisible, setIsVisible }) => {
               onPress={toggleCheckbox}
               className="flex-row items-center"
             >
-              {isChecked ? (
+              {isBodyWeight ? (
                 <MaterialIcons name="check-box" size={24} color="#9ca3af" />
               ) : (
                 <MaterialIcons
@@ -57,12 +79,12 @@ const ExerciseModalForm = ({ toggleModal, isVisible, setIsVisible }) => {
             </TouchableOpacity>
           </View>
 
-          <TouchableOpacity onPress={toggleModal}>
+          <TouchableOpacity onPress={onCancel}>
             <Text className="border-2 border-black w-20 text-center p-2 rounded-md self-center my-2">
               Cancel
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={handleSubmit}>
+          <TouchableOpacity onPress={onSubmit}>
             <Text className="bg-amber-400 w-20 text-center p-2 rounded-md self-center">
               Submit
             </Text>
