@@ -1,4 +1,5 @@
 import createDataContext from "./createDataContext";
+import { auth, collection, doc, db, setDoc, addDoc, onSnapshot } from "../../firebase";
 
 const exerciseReducer = (state, action) => {
   switch (action.type) {
@@ -7,15 +8,12 @@ const exerciseReducer = (state, action) => {
     case "submit":
       return {
         ...state,
-        // name: "",
-        // muscleGroup: "",
-        // bodyWeight: false,
         modalVisible: false,
       };
-    case 'add_error':
-      return {...state, errorMessage: 'something went wrong'}
-    case 'clear_error_message':
-      return {...state, errorMEssage: ''}
+    case "add_error":
+      return { ...state, errorMessage: action.payload };
+    case "clear_error_message":
+      return { ...state, errorMEssage: "" };
     case "toggle_modal":
       return {
         ...state,
@@ -29,15 +27,27 @@ const exerciseReducer = (state, action) => {
   }
 };
 
-const handleSubmit = (dispatch) => (name, muscleGroup, isBodyWeight) => {
-  console.log({
-    name,
-    muscleGroup,
-    isBodyWeight,
-  });
-  dispatch({
-    type: "submit",
-  });
+const handleSubmit = (dispatch) => async (name, muscleGroup, isBodyWeight) => {
+  try {
+    const userID = auth.currentUser.uid;
+    const userRef = doc(db, "users", userID);
+    const exerciseRef = collection(userRef, "exercises");
+    await addDoc(exerciseRef, {
+      name,
+      muscleGroup,
+      isBodyWeight,
+    });
+  } catch (err) {
+    console.log(err);
+    dispatch({
+      type: "add_error",
+      payload: "Something went wrong saving exercise.",
+    });
+  } finally {
+    dispatch({
+      type: "submit",
+    });
+  }
 };
 
 // const handleTextChange = (dispatch) => (name, muscleGroup) => {
@@ -72,5 +82,5 @@ export const { Provider, Context } = createDataContext(
     onRequestClose,
     toggleModal,
   },
-  { modalVisible: false, errorMessage: '' }
+  { modalVisible: false, errorMessage: "" }
 );

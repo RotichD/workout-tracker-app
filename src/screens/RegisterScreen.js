@@ -7,12 +7,30 @@ import {
   auth,
   createUserWithEmailAndPassword,
   updateProfile,
+  addDoc,
+  doc,
+  db,
+  collection,
+  setDoc,
 } from "../../firebase";
 
 const RegisterScreen = ({ navigation }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const createUserDocument = async (uid) => {
+    const usersRef = collection(db, 'users')
+    try {
+      const newUserDocRef = doc(usersRef, uid)
+      await setDoc(newUserDocRef, {
+        username: name,
+        userID: uid,
+      })
+    } catch (err) {
+      console.log(err)
+    }
+  } 
 
   const register = () => {
     createUserWithEmailAndPassword(auth, email, password)
@@ -22,6 +40,10 @@ const RegisterScreen = ({ navigation }) => {
         updateProfile(user, {
           displayName: name,
         });
+        return user.uid;
+      })
+      .then((uid) => {
+        createUserDocument(uid);
       })
       .catch((error) => {
         // Handle error
