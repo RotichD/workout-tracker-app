@@ -1,5 +1,14 @@
 import createDataContext from "./createDataContext";
-import { auth, collection, doc, db, setDoc, addDoc, onSnapshot } from "../../firebase";
+import {
+  auth,
+  collection,
+  doc,
+  db,
+  setDoc,
+  addDoc,
+  onSnapshot,
+} from "../../firebase";
+import Toast from "react-native-toast-message";
 
 const exerciseReducer = (state, action) => {
   switch (action.type) {
@@ -10,10 +19,6 @@ const exerciseReducer = (state, action) => {
         ...state,
         modalVisible: false,
       };
-    case "add_error":
-      return { ...state, errorMessage: action.payload };
-    case "clear_error_message":
-      return { ...state, errorMEssage: "" };
     case "toggle_modal":
       return {
         ...state,
@@ -39,29 +44,24 @@ const handleSubmit = (dispatch) => async (name, muscleGroup, isBodyWeight) => {
     });
   } catch (err) {
     console.log(err);
-    dispatch({
-      type: "add_error",
-      payload: "Something went wrong saving exercise.",
+    Toast.show({
+      type: "error",
+      text1: "Error",
+      text2: "Something went wrong :(",
+      position: "bottom",
     });
   } finally {
     dispatch({
       type: "submit",
     });
+    Toast.show({
+      type: "success",
+      text1: "Success",
+      text2: `Saved ${name} to your exercises`,
+      position: "bottom",
+    });
   }
 };
-
-// const handleTextChange = (dispatch) => (name, muscleGroup) => {
-//   dispatch({
-//     type: "text_change",
-//     payload: { name, muscleGroup },
-//   });
-// };
-
-// const toggleCheckbox = (dispatch) => () => {
-//   dispatch({
-//     type: "toggle_checkbox",
-//   });
-// };
 
 const onRequestClose = (dispatch) => () => {
   dispatch({
