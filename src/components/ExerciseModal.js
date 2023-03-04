@@ -8,6 +8,13 @@ const ExerciseModalForm = () => {
   const [name, setName] = useState("");
   const [isBodyWeight, setIsBodyWeight] = useState(false);
 
+  const {
+    state: { modalVisible },
+    handleSubmit,
+    onRequestClose,
+    toggleModal,
+  } = useContext(ExerciseContext);
+
   const toggleCheckbox = () => {
     setIsBodyWeight(!isBodyWeight);
   };
@@ -31,13 +38,6 @@ const ExerciseModalForm = () => {
     }
   };
 
-  const {
-    state: { modalVisible },
-    handleSubmit,
-    onRequestClose,
-    toggleModal,
-  } = useContext(ExerciseContext);
-
   return (
     <Modal
       animationType="slide"
@@ -47,14 +47,14 @@ const ExerciseModalForm = () => {
     >
       <View className="flex-1 items-center justify-center bg-gray-800/70">
         <View className=" bg-white p-8 rounded-lg w-80">
-          <Text>Exercise Name</Text>
+          <Text className="font-semibold mb-1">Exercise Name</Text>
           <TextInput
             className="border-2 border-gray-400 rounded-md p-2 mb-2"
             value={name}
             onChangeText={setName}
             placeholder="Bench Press"
           />
-          <Text>Muscle Group</Text>
+          <Text className="font-semibold mb-1">Muscle Group</Text>
           <TextInput
             className="border-2 border-gray-400 rounded-md p-2"
             value={muscleGroup}
@@ -62,7 +62,7 @@ const ExerciseModalForm = () => {
             placeholder="Push"
           />
           <View className="flex flex-row justify-between py-2 mt-2 items-center">
-            <Text>Body Weight Exercise?</Text>
+            <Text className="font-semibold">Body Weight Exercise?</Text>
             <TouchableOpacity
               onPress={toggleCheckbox}
               className="flex-row items-center"

@@ -14,11 +14,17 @@ const exerciseReducer = (state, action) => {
   switch (action.type) {
     default:
       return state;
+    case "fetch_exercises":
+      return { ...state, exercises: action.payload };
     case "submit":
       return {
         ...state,
         modalVisible: false,
       };
+    case "start_loading":
+      return { ...state, isLoading: true };
+    case "stop_loading":
+      return { ...state, isLoading: false };
     case "toggle_modal":
       return {
         ...state,
@@ -29,6 +35,31 @@ const exerciseReducer = (state, action) => {
         ...state,
         modalVisible: false,
       };
+  }
+};
+
+const fetchExercises = (dispatch) => async () => {
+  try {
+    dispatch({ type: "start_loading" });
+    onSnapshot(
+      collection(db, "users", auth.currentUser.uid, "exercises"),
+      async (querySnapshot) => {
+        const docs = [];
+        querySnapshot.forEach((doc) => {
+          docs.push({ id: doc.id, ...doc.data() });
+        });
+        dispatch({ type: "stop_loading" });
+        dispatch({ type: "fetch_exercises", payload: docs });
+      }
+    );
+  } catch (err) {
+    console.log(err);
+    Toast.show({
+      type: "error",
+      text1: "Error",
+      text2: "Having trouble loading your exercises :(",
+      position: "bottom",
+    });
   }
 };
 
@@ -81,6 +112,7 @@ export const { Provider, Context } = createDataContext(
     handleSubmit,
     onRequestClose,
     toggleModal,
+    fetchExercises,
   },
-  { modalVisible: false, errorMessage: "" }
+  { modalVisible: false, errorMessage: "", exercises: [], isLoading: false }
 );

@@ -1,32 +1,32 @@
-import React, { useState, useContext, useEffect } from "react";
-import { Text, TouchableOpacity, FlatList } from "react-native";
+import React, { useContext, useEffect } from "react";
+import { Text, TouchableOpacity, FlatList, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Entypo } from "@expo/vector-icons";
-import { Skeleton } from "@rneui/themed";
 
 import ExerciseModalForm from "../components/ExerciseModal";
 import ExerciseCard from "../components/ExerciseCard";
+import SkeletonCards from "../components/SkeletonCards";
 
 import { Context as ExerciseContext } from "../context/ExerciseContext";
-import { collection, db, auth, onSnapshot } from "../../firebase";
 
 const ExercisesScreen = () => {
-  const [exercises, setExercises] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const { toggleModal } = useContext(ExerciseContext);
+
+  const {
+    toggleModal,
+    fetchExercises,
+    state: { exercises, isLoading },
+  } = useContext(ExerciseContext);
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(
-      collection(db, "users", auth.currentUser.uid, "exercises"),
-      async (querySnapshot) => {
-        const docs = [];
-        querySnapshot.forEach((doc) => {
-          docs.push({ id: doc.id, ...doc.data() });
-        });
-        setExercises(docs);
-        setIsLoading(false);
+    const unsubscribe = () => {
+      try {
+        fetchExercises();
+      } catch (err) {
+        console.log(err);
       }
-    );
+    };
+
+    unsubscribe();
 
     return unsubscribe;
   }, []);
@@ -51,25 +51,7 @@ const ExercisesScreen = () => {
     <SafeAreaView className="flex-1 bg-white">
       {title()}
       {addExerciseButton()}
-      {isLoading ? (
-        <>
-          <Skeleton
-            style={{ alignSelf: "center", marginVertical: 5, }}
-            width={310}
-            height={70}
-          />
-          <Skeleton
-            style={{ alignSelf: "center", marginVertical: 5 }}
-            width={310}
-            height={70}
-          />
-          <Skeleton
-            style={{ alignSelf: "center", marginVertical: 5 }}
-            width={310}
-            height={70}
-          />
-        </>
-      ) : null}
+      {isLoading ? <SkeletonCards /> : null}
       <FlatList
         data={exercises}
         renderItem={({ item }) => <ExerciseCard data={item} />}
