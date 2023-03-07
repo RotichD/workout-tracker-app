@@ -1,13 +1,17 @@
 import React from "react";
 import { TouchableOpacity, View, Text } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { FontAwesome5 } from "@expo/vector-icons";
+import { Ionicons } from '@expo/vector-icons';
 
 const ExerciseCard = ({ data }) => {
+  const navigation = useNavigation();
+
   return (
     <TouchableOpacity
       className="bg-amber-400 shadow-md my-2 rounded-lg p-5 flex flex-row justify-between"
+      onPress={() => navigation.navigate("ExerciseDetail", { _id: data.id})}
     >
       <View className="flex flex-1">
         <Text className="font-semibold text-slate-900 truncate">
@@ -17,13 +21,9 @@ const ExerciseCard = ({ data }) => {
       </View>
       <View>
         {data.isBodyWeight ? (
-          <FontAwesome5 name="weight" size={24} color="black" />
+         <MaterialCommunityIcons name="human-handsup" size={24} color="black" />
         ) : (
-          <MaterialCommunityIcons
-            name="weight-lifter"
-            size={24}
-            color="black"
-          />
+          <Ionicons name="ios-barbell" size={24} color="black" />
         )}
       </View>
     </TouchableOpacity>
