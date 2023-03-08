@@ -13,23 +13,9 @@ const ExercisesScreen = () => {
 
   const {
     toggleModal,
-    fetchExercises,
     state: { exercises, isLoading },
   } = useContext(ExerciseContext);
 
-  useEffect(() => {
-    const unsubscribe = () => {
-      try {
-        fetchExercises();
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
-    unsubscribe();
-
-    return unsubscribe;
-  }, []);
 
   const title = () => (
     <Text className="text-3xl text-center font-bold text-gray-900 my-5 shadow-amber-400">

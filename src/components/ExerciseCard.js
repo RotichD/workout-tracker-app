@@ -20,7 +20,7 @@ const ExerciseCard = ({ data }) => {
         <Text className="text-slate-600">{data.muscleGroup}</Text>
       </View>
       <View>
-        {data.isBodyWeight ? (
+      {data.isBodyWeight ? (
          <MaterialCommunityIcons name="human-handsup" size={24} color="black" />
         ) : (
           <Ionicons name="ios-barbell" size={24} color="black" />
