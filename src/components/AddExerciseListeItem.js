@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { Context as WorkoutContext } from "../context/WorkoutContext";
@@ -9,13 +9,15 @@ const AddExerciseListeItem = ({ data }) => {
     state: { workout },
   } = useContext(WorkoutContext);
 
-  console.log(data)
+  console.log(data);
 
   const presentInBoth = workout.some((workout) => workout.id === data.id);
 
   return (
     <TouchableOpacity>
-      <View className="flex-1 border-b-2 border-amber-500 bg-white p-2 flex-row justify-between items-center">
+      <View
+        style={styles.listItem}
+      >
         <View className="flex-row items-center">
           <View>
             {data.isBodyWeight ? (
@@ -46,5 +48,18 @@ const AddExerciseListeItem = ({ data }) => {
     </TouchableOpacity>
   );
 };
+
+const styles = StyleSheet.create({
+  listItem: {
+    flex: 1,
+    borderBottomWidth: "2px",
+    borderBottomColor: "#f59e0b",
+    backgroundColor: "#FFFFFF",
+    padding: 8,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+});
 
 export default AddExerciseListeItem;
