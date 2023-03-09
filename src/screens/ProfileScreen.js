@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { View } from "react-native";
 import { Button, Text } from "@rneui/base";
 import { auth, signOut } from "../../firebase";
 import Spacer from "../components/Spacer";
@@ -29,7 +29,5 @@ const ProfileScreen = ({ navigation }) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({});
 
 export default ProfileScreen;
