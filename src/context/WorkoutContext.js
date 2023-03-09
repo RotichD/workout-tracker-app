@@ -15,16 +15,28 @@ const workoutReducer = (state, action) => {
         modalVisible: !state.modalVisible,
       };
     case "clear_workout_list":
-      return { ...state, workout: [] };
+      return { ...state, workouts: [] };
+
+    case "load_workout":
+      return { ...state, workouts: [...state.workouts, action.payload] };
+    case "remove_workout":
+      const updatedWorkouts = state.workouts.filter(
+        (workout) => workout !== action.payload
+      );
+      return { ...state, workouts: updatedWorkouts };
   }
 };
 
-const clearWorkout = (dispatch) => () => {
+const clearWorkouts = (dispatch) => () => {
   dispatch({ type: "clear_workout_list" });
 };
 
-const loadWorkout = (dispatch) => () => {
-  console.log("load workout");
+const loadWorkout = (dispatch) => (id) => {
+  dispatch({ type: "load_workout", payload: id });
+};
+
+const removeWorkout = (dispatch) => (id) => {
+  dispatch({ type: "remove_workout", payload: id });
 };
 
 const toggleModal = (dispatch) => () => {
@@ -37,9 +49,9 @@ const onRequestClose = (dispatch) => () => {
 
 export const { Provider, Context } = createDataContext(
   workoutReducer,
-  { loadWorkout, onRequestClose, toggleModal, clearWorkout },
+  { loadWorkout, onRequestClose, toggleModal, clearWorkouts, removeWorkout },
   {
     modalVisible: false,
-    workout: [{ name: "1", id: "123f" }],
+    workouts: [],
   }
 );

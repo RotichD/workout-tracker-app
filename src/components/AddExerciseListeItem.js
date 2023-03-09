@@ -3,21 +3,28 @@ import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { Context as WorkoutContext } from "../context/WorkoutContext";
+import { Touchable } from "react-native-web";
 
 const AddExerciseListeItem = ({ data }) => {
   const {
-    state: { workout },
+    state: { workouts },
+    loadWorkout,
+    removeWorkout,
   } = useContext(WorkoutContext);
 
-  console.log(data);
+  const isLoadedInState = workouts.some((workout) => workout === data.id);
 
-  const presentInBoth = workout.some((workout) => workout.id === data.id);
+  const handlePress = () => {
+    if (isLoadedInState) {
+      removeWorkout(data.id);
+    } else {
+      loadWorkout(data.id);
+    }
+  };
 
   return (
-    <TouchableOpacity>
-      <View
-        style={styles.listItem}
-      >
+    <TouchableOpacity onPress={handlePress}>
+      <View style={styles.listItem}>
         <View className="flex-row items-center">
           <View>
             {data.isBodyWeight ? (
@@ -38,7 +45,7 @@ const AddExerciseListeItem = ({ data }) => {
           </View>
         </View>
         <View>
-          {presentInBoth ? (
+          {isLoadedInState ? (
             <Ionicons name="radio-button-on" size={24} color="black" />
           ) : (
             <Ionicons name="radio-button-off" size={24} color="black" />

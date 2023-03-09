@@ -11,8 +11,8 @@ import { Ionicons } from "@expo/vector-icons";
 const HomeScreen = () => {
   const {
     toggleModal,
-    clearWorkout,
-    state: { workout },
+    clearWorkouts,
+    state: { workouts },
   } = useContext(WorkoutContext);
 
   const {
@@ -36,7 +36,7 @@ const HomeScreen = () => {
 
   const loadIcon = <Ionicons name="reload" size={18} color="white" />;
   const plusIcon = <Ionicons name="add" size={24} color="white" />;
-  const saveIcon = <Ionicons name="ios-save" size={18} color="black" />;
+  const saveIcon = <Ionicons name="ios-save" size={15} color="black" />;
   const clearIcon = (
     <Ionicons name="remove-circle-outline" size={18} color="black" />
   );
@@ -49,7 +49,7 @@ const HomeScreen = () => {
       leftBtnText=" Load Workout"
       rightBtnText="Exercises"
       color="bg-gray-500"
-      text="white"
+      text="white "
       styles="mb-2"
     />
   );
@@ -58,9 +58,9 @@ const HomeScreen = () => {
     <HomeMenu
       leftIcon={clearIcon}
       leftBtnText="Clear List"
-      leftBtnPress={clearWorkout}
+      leftBtnPress={clearWorkouts}
       rightIcon={saveIcon}
-      rightBtnText="Save Workout"
+      rightBtnText=" Save Workout"
       color="bg-amber-500"
       text="black"
       styles="mt-2"
@@ -87,7 +87,7 @@ const HomeScreen = () => {
       <ScrollView className="p-5">
         <View className=" h-fit justify-between">
           {topMenu()}
-          {workout.length > 1 && bottomMenu()}
+          {workouts.length > 0 && bottomMenu()}
         </View>
       </ScrollView>
 

@@ -6,16 +6,14 @@ import { Context as ExerciseContext } from "../context/ExerciseContext";
 import AddExerciseListeItem from "./AddExerciseListeItem";
 
 const ExerciseListModal = ({ listData }) => {
-    const {
-      state: { exercises },
-    } = useContext(ExerciseContext);
   const {
-    state: { modalVisible },
+    state: { exercises },
+  } = useContext(ExerciseContext);
+  const {
+    state: { modalVisible, workouts },
     onRequestClose,
     toggleModal,
   } = useContext(WorkoutContext);
-
-  console.log(exercises)
 
   return (
     <Modal
@@ -28,7 +26,9 @@ const ExerciseListModal = ({ listData }) => {
         <View className="w-screen p-8 justify-center">
           <FlatList
             data={exercises}
-            renderItem={({ item }) => <AddExerciseListeItem data={item} />}
+            renderItem={({ item }) => (
+              <AddExerciseListeItem data={item} />
+            )}
             keyExtractor={(item) => item.id}
           />
           <TouchableOpacity
