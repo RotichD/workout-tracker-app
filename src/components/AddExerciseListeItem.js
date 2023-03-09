@@ -12,13 +12,13 @@ const AddExerciseListeItem = ({ data }) => {
     removeWorkout,
   } = useContext(WorkoutContext);
 
-  const isLoadedInState = workouts.some((workout) => workout === data.id);
+  const isLoadedInState = workouts.some((workout) => workout.id === data.id);
 
   const handlePress = () => {
     if (isLoadedInState) {
-      removeWorkout(data.id);
+      removeWorkout(data);
     } else {
-      loadWorkout(data.id);
+      loadWorkout(data);
     }
   };
 

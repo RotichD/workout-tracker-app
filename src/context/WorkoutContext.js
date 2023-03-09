@@ -31,12 +31,12 @@ const clearWorkouts = (dispatch) => () => {
   dispatch({ type: "clear_workout_list" });
 };
 
-const loadWorkout = (dispatch) => (id) => {
-  dispatch({ type: "load_workout", payload: id });
+const loadWorkout = (dispatch) => (obj) => {
+  dispatch({ type: "load_workout", payload: obj });
 };
 
-const removeWorkout = (dispatch) => (id) => {
-  dispatch({ type: "remove_workout", payload: id });
+const removeWorkout = (dispatch) => (obj) => {
+  dispatch({ type: "remove_workout", payload: obj });
 };
 
 const toggleModal = (dispatch) => () => {

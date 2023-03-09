@@ -5,17 +5,37 @@ import HomeScreen from "../src/screens/HomeScreen";
 import ExercisesScreen from "../src/screens/ExercisesScreen";
 import ProfileScreen from "../src/screens/ProfileScreen";
 import ExerciseDetailScreen from "../src/screens/ExerciseDetailScreen";
+import WorkoutAttemptScreen from "../src/screens/WorkoutAttemptScreen";
 import { Ionicons } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const Tab = createBottomTabNavigator();
-const Stack = createStackNavigator();
+const ExerciseStack = createStackNavigator();
+const HomeStack = createStackNavigator();
 
-const ExerciseStack = () => {
+const HomeStackScreen = () => {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="ExerciseList" component={ExercisesScreen} />
-      <Stack.Screen
+    <HomeStack.Navigator screenOptions={{ headerShown: false }}>
+      <HomeStack.Screen name="HomeScreen" component={HomeScreen} />
+      <HomeStack.Screen
+        name="WorkoutAttemptScreen"
+        component={WorkoutAttemptScreen}
+        options={{
+          headerShown: true,
+          headerBackTitle: "Back",
+          headerTitle: "Workout Attempt",
+          headerTintColor: "#f59e0b",
+        }}
+      />
+    </HomeStack.Navigator>
+  );
+};
+
+const ExerciseStackScreen = () => {
+  return (
+    <ExerciseStack.Navigator screenOptions={{ headerShown: false }}>
+      <ExerciseStack.Screen name="ExerciseList" component={ExercisesScreen} />
+      <ExerciseStack.Screen
         name="ExerciseDetail"
         component={ExerciseDetailScreen}
         options={{
@@ -25,7 +45,7 @@ const ExerciseStack = () => {
           headerTintColor: "#f59e0b",
         }}
       />
-    </Stack.Navigator>
+    </ExerciseStack.Navigator>
   );
 };
 
@@ -55,8 +75,8 @@ const AppStack = () => {
         },
       })}
     >
-      <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Exercises" component={ExerciseStack} />
+      <Tab.Screen name="Home" component={HomeStackScreen} />
+      <Tab.Screen name="Exercises" component={ExerciseStackScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );
