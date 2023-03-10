@@ -1,16 +1,39 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
-import { Picker } from "@react-native-picker/picker";
+import React, { useState, useEffect } from "react";
+import { View, Text, ScrollView } from "react-native";
 import { Slider } from "@rneui/themed";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import Pickers from "../components/Pickers";
+import Sliders from "../components/Sliders";
 
 const WorkoutAttemptScreen = ({ route }) => {
   const exerciseDetails = route.params.exerciseObj;
 
   const [sets, setSets] = useState(1);
   const [reps, setReps] = useState(1);
+  const [sliderValues, setSliderValues] = useState(new Array(sets).fill(0));
+  const totalReps = sliderValues.reduce((acc, curr) => acc + curr);
+  const repsGoal = reps * sets;
+  const performance = Math.floor((totalReps / repsGoal) * 100);
+  let style = "";
+
+  if (performance < 85) {
+    style = "text-red-700";
+  } else if (performance >= 85 && performance < 95) {
+    style = "text-yellow-700";
+  } else {
+    style = "text-green-700";
+  }
+
+  useEffect(() => {
+    setSliderValues(new Array(sets).fill(0));
+  }, [sets]);
+
+  const handleSliderChange = (value, index) => {
+    const newSliderValues = [...sliderValues];
+    newSliderValues[index] = value;
+    setSliderValues(newSliderValues);
+  };
 
   const onSetsChange = (setsValue) => {
     setSets(setsValue);
@@ -23,7 +46,7 @@ const WorkoutAttemptScreen = ({ route }) => {
   const header = () => (
     <View>
       <View className="flex-row justify-center items-center pt-2">
-        <Text className="text-xl font-bold truncate">
+        <Text className="text-xl font-bold truncate mr-1">
           {exerciseDetails.name}
         </Text>
         {exerciseDetails.isBodyWeight ? (
@@ -49,39 +72,21 @@ const WorkoutAttemptScreen = ({ route }) => {
     </View>
   );
 
-  const SetsRepsPicker = ({ sets, reps }) => {
-    const [sliderValues, setSliderValues] = useState(new Array(sets).fill(0));
-
-    const handleSliderChange = (value, index) => {
-      const newSliderValues = [...sliderValues];
-      newSliderValues[index] = value;
-      setSliderValues(newSliderValues);
-    };
-
-    const totalReps = sliderValues.reduce((acc, curr) => acc + curr);
-
-    return (
-      <View className='mr-2'>
-        {sliderValues.map((sliderValue, index) => (
-          <View key={index}>
-            <Text className='text-slate-600 text-center'>Set {index + 1}: {sliderValue} Reps</Text>
-            <Slider
-              minimumValue={0}
-              maximumValue={reps}
-              step={1}
-              value={sliderValue}
-              thumbTintColor="#f59e0b"
-              onValueChange={(value) => handleSliderChange(value, index)}
-            />
-          </View>
-        ))}
-        <Text>Total Reps: {totalReps}</Text>
+  const stats = () => (
+    <View className="items-center mb-5">
+      <View className="flex-row items-center justify-center">
+        <Text className="text-slate-600 font-semibold">Total Reps: </Text>
+        <Text className="text-slate-600">{totalReps}</Text>
       </View>
-    );
-  };
+      <View className="flex-row items-center justify-center">
+        <Text className="text-slate-600 font-semibold">Performance: </Text>
+        <Text className={`${style}`}>{performance}%</Text>
+      </View>
+    </View>
+  );
 
   return (
-    <View className='px-4 '>
+    <ScrollView className="px-4">
       {header()}
       {details()}
       <Pickers
@@ -90,8 +95,13 @@ const WorkoutAttemptScreen = ({ route }) => {
         setsChange={onSetsChange}
         repsChange={onRepsChange}
       />
-      <SetsRepsPicker sets={sets} reps={reps} />
-    </View>
+      <Sliders
+        onSlide={handleSliderChange}
+        sliderValues={sliderValues}
+        reps={reps}
+      />
+      {stats()}
+    </ScrollView>
   );
 };
 
