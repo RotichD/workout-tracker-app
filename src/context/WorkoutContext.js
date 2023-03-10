@@ -6,6 +6,8 @@ import {
   db,
   arrayUnion,
   updateDoc,
+  addDoc,
+  getDoc
 } from "../../firebase";
 import Toast from 'react-native-toast-message';
 
@@ -72,21 +74,28 @@ const saveAttempt =
     attempts.push(attemptObj);
 
     const uid = auth.currentUser.uid;
-    const exerciseDocRef = doc(collection(db, "users", uid, "exercises"), id);
+    const exerciseDocRef = doc(db, "users", uid, "exercises", id);
 
     try {
-      updateDoc(exerciseDocRef, {
-        attempts: arrayUnion({
-          ...attemptObj,
-          timestamp: new Date().toISOString(),
-        }),
-      })
-        .then(() => {
+
+        const exerciseDocSnap = await getDoc(exerciseDocRef);
+        if (exerciseDocSnap.exists()) {
+          const attemptsCollectionRef = collection(exerciseDocRef, 'attempts')
+          await addDoc(attemptsCollectionRef, {
+            ...attemptObj,
+            timestamp: new Date().toISOString(),
+          })
           console.log("Document successfully updated!");
-        })
-        .catch((error) => {
-          console.error("Error updating document: ", error);
-        });
+          Toast.show({
+                type: "success",
+                text1: "Success",
+                text2: `Saved Attempt`,
+                position: "bottom",
+              });
+              dispatch({ type: "save_attempt", payload: id });
+        } else {
+          console.log('does not exist')
+        }
     } catch (err) {
       console.log(err);
       Toast.show({
@@ -95,14 +104,6 @@ const saveAttempt =
         text2: "Having trouble saving attempt :(",
         position: "bottom",
       });
-    } finally {
-      Toast.show({
-        type: "success",
-        text1: "Success",
-        text2: `Saved Attempt`,
-        position: "bottom",
-      });
-      dispatch({ type: "save_attempt", payload: id });
     }
   };
 

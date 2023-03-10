@@ -11,6 +11,7 @@ import {
   arrayUnion,
   serverTimestamp,
   updateDoc,
+  getDoc
 } from "firebase/firestore";
 
 import {
@@ -57,6 +58,7 @@ export {
   arrayUnion,
   serverTimestamp,
   updateDoc,
+  getDoc
 };
 
 // const analytics = getAnalytics(app);

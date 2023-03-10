@@ -7,6 +7,7 @@ import {
   setDoc,
   addDoc,
   onSnapshot,
+  getDocs,
 } from "../../firebase";
 import Toast from "react-native-toast-message";
 
@@ -35,6 +36,43 @@ const exerciseReducer = (state, action) => {
         ...state,
         modalVisible: false,
       };
+    case "fetch_attempts":
+      return {
+        ...state,
+        attempts: action.payload,
+      };
+    case "clear_attempts":
+      return {
+        ...state,
+        attempts: [],
+      };
+  }
+};
+
+const fetchDetails = (dispatch) => async (id) => {
+  try {
+    dispatch({ type: "start_loading" });
+    dispatch({ type: "clear_attempts" });
+    const subCollectionRef = collection(
+      db,
+      `users/${auth.currentUser.uid}/exercises/${id}/attempts`
+    );
+    const querySnapshot = await getDocs(subCollectionRef);
+    const docs = [];
+    querySnapshot.forEach((doc) => {
+      docs.push({ id: doc.id, ...doc.data() });
+    });
+    dispatch({ type: "fetch_attempts", payload: docs });
+    dispatch({ type: "stop_loading" });
+  } catch (err) {
+    console.log(err);
+    dispatch({ type: "stop_loading" });
+    Toast.show({
+      type: "error",
+      text1: "Error",
+      text2: "Having trouble loading your exercise :(",
+      position: "bottom",
+    });
   }
 };
 
@@ -54,6 +92,7 @@ const fetchExercises = (dispatch) => async () => {
     );
   } catch (err) {
     console.log(err);
+    dispatch({ type: "stop_loading" });
     Toast.show({
       type: "error",
       text1: "Error",
@@ -113,6 +152,13 @@ export const { Provider, Context } = createDataContext(
     onRequestClose,
     toggleModal,
     fetchExercises,
+    fetchDetails,
   },
-  { modalVisible: false, errorMessage: "", exercises: [], isLoading: false }
+  {
+    modalVisible: false,
+    errorMessage: "",
+    exercises: [],
+    isLoading: false,
+    attempts: [],
+  }
 );

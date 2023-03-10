@@ -1,18 +1,39 @@
-import React, { useContext } from "react";
-import { View, Text, ScrollView } from "react-native";
+import React, { useContext, useEffect } from "react";
+import { View, Text, ScrollView, FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Context as ExerciseContext } from "../context/ExerciseContext";
 import { MaterialIcons } from "@expo/vector-icons";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Ionicons } from "@expo/vector-icons";
+import AttemptCard from "../components/AttemptCard";
 
 const ExerciseDetailScreen = ({ route }) => {
   const _id = route.params._id;
 
   const {
-    state: { exercises },
+    state: { exercises, attempts },
+    fetchDetails,
   } = useContext(ExerciseContext);
   const exercise = exercises.find((e) => e.id === _id);
+  const sortedAttempts = attempts.slice().sort((a, b) => {
+    const dateA = new Date(a.timestamp).getTime();
+    const dateB = new Date(b.timestamp).getTime();
+    return dateB - dateA;
+  });
+
+ 
+
+  useEffect(() => {
+    const unsubscribe = () => {
+      try {
+        fetchDetails(exercise.id);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    unsubscribe();
+
+    return unsubscribe;
+  }, []);
 
   const title = () => (
     <View className="mb-5">
@@ -33,33 +54,17 @@ const ExerciseDetailScreen = ({ route }) => {
     <SafeAreaView className="flex-1 px-8">
       {title()}
       <Text className="font-bold text-lg text-left">History</Text>
-      <ScrollView>
-        <View className="bg-amber-400 shadow-md my-2 rounded-lg p-5 justify-between">
-          <View className="flex-row justify-between">
-            <Text className=" font-semibold">Attempted on:</Text>
-            <Text className="text-slate-800">02/23/2023</Text>
-          </View>
-          <View className="flex-row justify-between items-center">
-            <Text className="font-semibold">Goal: 4 sets of 8 reps</Text>
-            <View className="flex-row items-center">
-              <Text className="font-semibold">65</Text>
-              <MaterialCommunityIcons
-                name="weight-pound"
-                size={18}
-                color='"black"'
-              />
-            </View>
-          </View>
-          <View className="flex-row items-center justify-between">
-            <Text className="font-semibold">Completed: 30/32 Reps</Text>
-            <Text className="font-semibold text-green-700">94%</Text>
-          </View>
-          <View className="flex-row items-center justify-between">
-            <Text className="font-semibold">Total Volume: 1,950 lbs</Text>
-            <Ionicons name="ios-trending-up" size={18} color="black" />
-          </View>
-        </View>
-      </ScrollView>
+      <FlatList
+        data={sortedAttempts}
+        renderItem={({ item, index }) => (
+          <AttemptCard
+            detailObj={item}
+            isBodyWeight={exercise.isBodyWeight}
+            previousAttempt={index < sortedAttempts.length - 1 ? sortedAttempts[index + 1] : null} 
+          />
+        )}
+        keyExtractor={(item) => item.id}
+      />
     </SafeAreaView>
   );
 };
