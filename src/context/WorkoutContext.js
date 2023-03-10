@@ -1,4 +1,13 @@
 import createDataContext from "./createDataContext";
+import {
+  auth,
+  collection,
+  doc,
+  db,
+  arrayUnion,
+  updateDoc,
+} from "../../firebase";
+import Toast from 'react-native-toast-message';
 
 const workoutReducer = (state, action) => {
   switch (action.type) {
@@ -24,8 +33,78 @@ const workoutReducer = (state, action) => {
         (workout) => workout !== action.payload
       );
       return { ...state, workouts: updatedWorkouts };
+    case "save_attempt":
+      return { ...state, workouts:  state.workouts.filter((workout) => workout.id !== action.payload)};
   }
 };
+
+const saveAttempt =
+  (dispatch) =>
+  async (
+    id,
+    sets,
+    reps,
+    weight,
+    totalReps,
+    repsGoal,
+    performance,
+    volume,
+    isBodyWeight,
+  ) => {
+    const attempts = [];
+    const attemptObj = {
+      sets: sets,
+      reps: reps,
+      totalReps: totalReps,
+      repsGoal: repsGoal,
+      performance: performance,
+    };
+
+    if (isBodyWeight) {
+      attemptObj.weight = 0;
+      attemptObj.volume = totalReps;
+    } else {
+      attemptObj.weight = weight;
+      attemptObj.volume = volume;
+    }
+    console.log("id ", id);
+    console.log(attemptObj);
+    attempts.push(attemptObj);
+
+    const uid = auth.currentUser.uid;
+    const exerciseDocRef = doc(collection(db, "users", uid, "exercises"), id);
+
+    try {
+      updateDoc(exerciseDocRef, {
+        attempts: arrayUnion({
+          ...attemptObj,
+          timestamp: new Date().toISOString(),
+        }),
+      })
+        .then(() => {
+          console.log("Document successfully updated!");
+        })
+        .catch((error) => {
+          console.error("Error updating document: ", error);
+        });
+    } catch (err) {
+      console.log(err);
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Having trouble saving attempt :(",
+        position: "bottom",
+      });
+    } finally {
+      Toast.show({
+        type: "success",
+        text1: "Success",
+        text2: `Saved Attempt`,
+        position: "bottom",
+      });
+      dispatch({ type: "save_attempt", payload: id });
+    }
+  };
 
 const clearWorkouts = (dispatch) => () => {
   dispatch({ type: "clear_workout_list" });
@@ -49,7 +128,14 @@ const onRequestClose = (dispatch) => () => {
 
 export const { Provider, Context } = createDataContext(
   workoutReducer,
-  { loadWorkout, onRequestClose, toggleModal, clearWorkouts, removeWorkout },
+  {
+    loadWorkout,
+    onRequestClose,
+    toggleModal,
+    clearWorkouts,
+    removeWorkout,
+    saveAttempt,
+  },
   {
     modalVisible: false,
     workouts: [],

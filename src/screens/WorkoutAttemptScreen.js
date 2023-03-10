@@ -1,12 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import Pickers from "../components/Pickers";
 import Sliders from "../components/Sliders";
-
+import { Context as WorkoutContext } from "../context/WorkoutContext";
+import { useNavigation } from "@react-navigation/native";
 const WorkoutAttemptScreen = ({ route }) => {
+  
   const exerciseDetails = route.params.exerciseObj;
+
+  const { saveAttempt } = useContext(WorkoutContext);
 
   const [sets, setSets] = useState(1);
   const [reps, setReps] = useState(1);
@@ -57,6 +61,24 @@ const WorkoutAttemptScreen = ({ route }) => {
 
   const onRepsChange = (repsValue) => {
     setReps(repsValue);
+  };
+
+  const navigation = useNavigation();
+
+  const handleSubmit = async () => {
+    saveAttempt(
+      exerciseDetails.id,
+      sets,
+      reps,
+      weight,
+      totalReps,
+      repsGoal,
+      performance,
+      volume,
+      exerciseDetails.isBodyWeight
+    ).then(() => {
+      navigation.goBack();
+    })
   };
 
   const header = () => (
@@ -129,10 +151,13 @@ const WorkoutAttemptScreen = ({ route }) => {
       />
       {stats()}
       {totalReps > 0 && (
-        <TouchableOpacity className="bg-amber-500 p-2 rounded-md flex-row justify-center items-center my-2 justify-self-end">
-        <Ionicons name="ios-download-outline" size={14} color="black" />
-        <Text className=" font-semibold">Save Attempt</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          onPress={handleSubmit}
+          className="bg-amber-500 p-2 rounded-md flex-row justify-center items-center my-2 justify-self-end"
+        >
+          <Ionicons name="ios-download-outline" size={14} color="black" />
+          <Text className=" font-semibold">Save Attempt</Text>
+        </TouchableOpacity>
       )}
     </ScrollView>
   );
