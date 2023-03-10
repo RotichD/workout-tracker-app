@@ -1,12 +1,20 @@
-import React from 'react';
+import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 
-
-const Pickers = ({ sets, setsChange, reps, repsChange}) => {
+const Pickers = ({
+  sets,
+  setsChange,
+  reps,
+  repsChange,
+  isBodyWeight,
+  weight,
+  weights,
+  weightChange,
+}) => {
   return (
     <View className="p-4 flex-row justify-around">
-      <View className="flex-row items-center justify-between">
+      <View className="items-center justify-between">
         <Text className="text-base text-gray-600 font-medium">Sets:</Text>
         <Picker
           selectedValue={sets}
@@ -24,7 +32,7 @@ const Pickers = ({ sets, setsChange, reps, repsChange}) => {
         </Picker>
       </View>
 
-      <View className="flex-row items-center justify-between">
+      <View className="items-center justify-between">
         <Text className="text-base text-gray-600 font-medium">Reps:</Text>
         <Picker
           selectedValue={reps}
@@ -48,15 +56,30 @@ const Pickers = ({ sets, setsChange, reps, repsChange}) => {
           <Picker.Item label="15" value={15} />
         </Picker>
       </View>
+
+      {!isBodyWeight && (
+        <View className="items-center justify-between">
+          <Text className="text-base text-gray-600 font-medium">Weight:</Text>
+          <Picker
+            selectedValue={weight}
+            onValueChange={weightChange}
+            itemStyle={styles.picker}
+          >
+            {weights.map((weight, index) => (
+              <Picker.Item key={index} label={`${weight}`} value={weight} />
+            ))}
+          </Picker>
+        </View>
+      )}
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
-    picker: {
-      width: 90,
-      height: 50,
-    },
-  });
+  picker: {
+    width: 115,
+    height: 50,
+  },
+});
 
-export default Pickers
+export default Pickers;

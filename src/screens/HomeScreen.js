@@ -100,9 +100,9 @@ const HomeScreen = () => {
         <View className="flex">
           {workouts.length > 0 && bottomMenu()}
           {workouts.length > 0 && (
-            <TouchableOpacity className="flex-row justify-center items-center self-center my-2">
-              <Ionicons name="ios-download-outline" size={14} color="#f59e0b" />
-              <Text className="text-amber-500 font-semibold">Save Workout</Text>
+            <TouchableOpacity className="border-b border-amber-500 flex-row justify-center items-center self-center my-2">
+              <Ionicons name="ios-download-outline" size={14} color="#64748b" />
+              <Text className="text-slate-500 font-semibold">Save Workout</Text>
             </TouchableOpacity>
           )}
         </View>

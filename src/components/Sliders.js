@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text } from "react-native";
 import { Slider } from "@rneui/themed";
 
-
-const Sliders = ({ onSlide, reps, sliderValues }) => {
+const Sliders = ({ onSlide, reps, sliderValues, maxValue }) => {
 
   return (
     <View className="mr-2">
@@ -14,7 +13,7 @@ const Sliders = ({ onSlide, reps, sliderValues }) => {
           </Text>
           <Slider
             minimumValue={0}
-            maximumValue={reps}
+            maximumValue={maxValue}
             step={1}
             value={sliderValue}
             thumbTintColor="#f59e0b"
