@@ -1,11 +1,12 @@
-import React, { useContext, useEffect } from "react";
-import { View, Text, ScrollView, FlatList } from "react-native";
+import React, { useContext, useEffect, useState } from "react";
+import { View, Text, FlatList, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Context as ExerciseContext } from "../context/ExerciseContext";
 import { MaterialIcons } from "@expo/vector-icons";
 import AttemptCard from "../components/AttemptCard";
 
 const ExerciseDetailScreen = ({ route }) => {
+  const [isLoading, setIsLoading] = useState(false);
   const _id = route.params._id;
 
   const {
@@ -19,14 +20,16 @@ const ExerciseDetailScreen = ({ route }) => {
     return dateB - dateA;
   });
 
- 
-
   useEffect(() => {
-    const unsubscribe = () => {
+    const unsubscribe = async () => {
       try {
-        fetchDetails(exercise.id);
+        setIsLoading(true);
+        await fetchDetails(exercise.id);
       } catch (err) {
         console.log(err);
+        setIsLoading(false);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -54,13 +57,18 @@ const ExerciseDetailScreen = ({ route }) => {
     <SafeAreaView className="flex-1 px-8">
       {title()}
       <Text className="font-bold text-lg text-left">History</Text>
+      {isLoading && <ActivityIndicator visible={isLoading} size="large" />}
       <FlatList
         data={sortedAttempts}
         renderItem={({ item, index }) => (
           <AttemptCard
             detailObj={item}
             isBodyWeight={exercise.isBodyWeight}
-            previousAttempt={index < sortedAttempts.length - 1 ? sortedAttempts[index + 1] : null} 
+            previousAttempt={
+              index < sortedAttempts.length - 1
+                ? sortedAttempts[index + 1]
+                : null
+            }
           />
         )}
         keyExtractor={(item) => item.id}

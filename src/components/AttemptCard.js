@@ -49,7 +49,7 @@ const AttemptCard = ({ detailObj, isBodyWeight, previousAttempt }) => {
   );
 
   return (
-    <View className="bg-slate-300 shadow-sm my-2 rounded-lg p-5 justify-between">
+    <View className="bg-gray-300 shadow-sm my-2 rounded-lg p-5 justify-between">
       <View className="flex-row justify-between">
         <Text className=" font-semibold">Attempted on:</Text>
         <Text className="text-slate-800">{formattedDate}</Text>

@@ -11,6 +11,7 @@ const HomeMenu = ({
   leftBtnText,
   rightBtnText,
   color,
+  disableBtn,
 }) => {
   return (
     <View className={`flex-row justify-evenly ${styles}`}>
@@ -22,6 +23,7 @@ const HomeMenu = ({
         <Text className={`text-${text}`}>{leftBtnText}</Text>
       </TouchableOpacity>
       <TouchableOpacity
+        disabled={disableBtn}
         onPress={rightBtnPress}
         className={`h-13 w-36 flex-row items-center justify-center p-3 ml-1 rounded-xl ${color}`}
       >

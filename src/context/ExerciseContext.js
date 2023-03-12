@@ -51,7 +51,6 @@ const exerciseReducer = (state, action) => {
 
 const fetchDetails = (dispatch) => async (id) => {
   try {
-    dispatch({ type: "start_loading" });
     dispatch({ type: "clear_attempts" });
     const subCollectionRef = collection(
       db,
@@ -63,10 +62,8 @@ const fetchDetails = (dispatch) => async (id) => {
       docs.push({ id: doc.id, ...doc.data() });
     });
     dispatch({ type: "fetch_attempts", payload: docs });
-    dispatch({ type: "stop_loading" });
   } catch (err) {
     console.log(err);
-    dispatch({ type: "stop_loading" });
     Toast.show({
       type: "error",
       text1: "Error",
